@@ -2,9 +2,8 @@ from tabulate import tabulate
 
 class AutoCatalog:
 
-    def __init__(self, file_name = r'C:\Users\Simen\OneDrive\Рабочий стол\CARS_OOP\auto_oop.txt'):
+    def __init__(self, file_name = r'C:\lab with git\oop_cars_tests\auto_oop.txt'):
         self.file_name = file_name
-
 
     def _read_catalog(self):
         with open(self.file_name, 'r', encoding='UTF-8') as file:
@@ -192,8 +191,42 @@ class AutoCatalog:
             lines[line][0] = str(line)
             new_line = lines[line]
             res.append(new_line)
-
         self._write_catalog(res)
+
+    def check_new_par(self):
+        while True:
+            par = input('Введите новый параметр:\n')
+            if par == '' or par.count(' ') == len(par):
+                print('Введена пустая строка. Ошибка')
+            else:
+                lines = self._read_catalog()
+                par = par.lower()
+                for i in lines[0]:
+                    if par == i.lower():
+                        print('Введённый параметр уже существует.')
+                        break
+                return par.title()
+
+    def add_par(self):
+        new_par = self.check_new_par()
+        lines = self._read_catalog()
+        lines[0].append(new_par)
+        for i in lines[1:]:
+            i.append('')
+        self._write_catalog(lines)
+        print('Параметр был добавлен')
+
+    def del_par(self):
+        lines = self._read_catalog()
+        par = input('Введите параметр, который вы хотите удалить\n')
+        if par.title() not in lines[0]:
+            print('Введен несуществующий параметр')
+        else:
+            num = lines[0].index(par)
+            for i in lines:
+                del i[num]
+            self._write_catalog(lines)
+            print('Параметр был удален')
 
 
 if __name__ == "__main__":
@@ -208,6 +241,8 @@ if __name__ == "__main__":
         print('Введите "Удалить" чтобы удалить машину')
         print('Введите "Изменить" чтобы изменить определенный параметр у машины')
         print('Введите "Стоп" чтобы остановить работу программы')
+        print('Введите "Добавить параметр", чтобы появился новый параметр для каждой машины')
+        print('Введите "Удалить параметр", чтобы удалить введенный параметр для каждой машины')
 
         command = input()
 
@@ -230,6 +265,11 @@ if __name__ == "__main__":
 
         elif command.lower() == 'стоп':
             break
+        elif command.lower() == "добавить параметр":
+            auto_catalog.add_par()
+
+        elif command.lower() == "удалить параметр":
+            auto_catalog.del_par()
 
         else:
             print('Неизвестная команда! Попробуйте заново\n')
